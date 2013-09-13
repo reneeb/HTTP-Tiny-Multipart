@@ -1,6 +1,12 @@
 Change history for HTTP::Tiny::Multipart
 ========================================
 
+0.02  2013-09-13T17:36:55
+
+      return the parts of the body
+      parts are a arrayref, need to deref when using join
+      set the filename for fileuploads
+
 0.01  2013-09-13T16:47:32
 
       initial release

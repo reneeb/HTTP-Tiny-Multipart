@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 use HTTP::Tiny;
-
+use File::Basename;
 use Carp;
 use MIME::Base64;
 
@@ -55,17 +55,28 @@ sub _build_content {
             my $content  = $value;
 
             if ( ref $value and ref $value eq 'HASH' ) {
-                my ($key, $value) = @{$value};
+                if ( $value->{content} ) {
+                    $content = $value->{content};
+                }
 
-                $content = $value if $key eq 'content';
+                if ( $value->{filename} ) {
+                    $filename = $value->{filename};
+                }
+                else {
+                    $filename = $key;
+                }
+
+                $filename = '; filename="' . basename( $filename ) . '"';
             }
 
-            push @terms, sprintf "Content-Disposition: form-data; name=\"%s\"%s\x0d\x0a\x0d\x0a%s",
+            push @terms, sprintf "Content-Disposition: form-data; name=\"%s\"%s\x0d\x0a\x0d\x0a%s\x0d\x0a",
                 $key, 
                 $filename,
                 $content;
         }
     }
+
+    return \@terms;
 }
 
 no warnings 'redefine';
@@ -94,7 +105,7 @@ no warnings 'redefine';
  
     return $self->request('POST', $url, {
             %$args,
-            content => $boundary . join( $boundary, $content_parts) . $last_boundary,
+            content => $boundary . join( $boundary, @{$content_parts}) . $last_boundary,
             headers => {
                 %$headers,
             },
