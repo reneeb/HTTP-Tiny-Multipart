@@ -1,6 +1,11 @@
 Change history for HTTP::Tiny::Multipart
 ========================================
 
+0.03  2014-08-26
+
+      add more documentation
+      set content-type for fileuploads if a content-type is defined
+
 0.02  2013-09-13T17:36:55
 
       return the parts of the body
