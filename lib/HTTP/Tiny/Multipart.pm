@@ -10,7 +10,7 @@ use File::Basename;
 use Carp;
 use MIME::Base64;
 
-our $VERSION = 0.02;
+our $VERSION = 0.03;
 
 sub _get_boundary {
     my ($headers, $content) = @_;
@@ -51,8 +51,9 @@ sub _build_content {
             unshift @params, map { $key => $_ } @$value;
         }
         else {
-            my $filename = '';
-            my $content  = $value;
+            my $filename     = '';
+            my $content      = $value;
+            my $content_type = '';
 
             if ( ref $value and ref $value eq 'HASH' ) {
                 if ( $value->{content} ) {
@@ -67,11 +68,16 @@ sub _build_content {
                 }
 
                 $filename = '; filename="' . basename( $filename ) . '"';
+
+                if ( $value->{content_type} ) {
+                    $content_type = "\x0d\x0aContent-Type: " . $value->{content_type};
+                }
             }
 
-            push @terms, sprintf "Content-Disposition: form-data; name=\"%s\"%s\x0d\x0a\x0d\x0a%s\x0d\x0a",
+            push @terms, sprintf "Content-Disposition: form-data; name=\"%s\"%s%s\x0d\x0a\x0d\x0a%s\x0d\x0a",
                 $key, 
                 $filename,
+                $content_type,
                 $content;
         }
     }
@@ -114,3 +120,71 @@ no warnings 'redefine';
 };
 
 1;
+
+=head1 SYNOPSIS
+
+    use HTTP::Tiny;
+    use HTTP::Tiny::Multipart;
+  
+    my $http = HTTP::Tiny->new;
+  
+    my $content = "This is a test";
+  
+    my $response = $http->post_multipart( 'http://localhost:3000/', { 
+        file => {
+            filename => 'test.txt',
+            content  => $content,
+        }
+    } );
+
+creates this request
+
+  POST / HTTP/1.1
+  Content-Length: 104
+  User-Agent: HTTP-Tiny/0.025
+  Content-Type: multipart/form-data; boundary=go7DX
+  Connection: close
+  Host: localhost:3000
+  
+  --go7DX
+  Content-Disposition: form-data; name="file"; filename="test.txt"
+  
+  This is a test
+  --go7DX--
+
+And
+    use HTTP::Tiny;
+    use HTTP::Tiny::Multipart;
+  
+    my $http = HTTP::Tiny->new;
+  
+    my $content = "This is a test";
+  
+    my $response = $http->post_multipart( 'http://localhost:3000/', { 
+        file => {
+            filename => 'test.txt',
+            content  => $content,
+            content_type  => 'text/plain',
+        }
+    } );
+
+creates
+
+  POST / HTTP/1.1
+  Content-Length: 104
+  User-Agent: HTTP-Tiny/0.025
+  Content-Type: multipart/form-data; boundary=go7DX
+  Connection: close
+  Host: localhost:3000
+  
+  --go7DX
+  Content-Disposition: form-data; name="file"; filename="test.txt"
+  Content-Type: text/plain
+  
+  This is a test
+  --go7DX--
+  Content-Disposition: form-data; name="testfield"
+  
+  test
+  --go7DX--
+
