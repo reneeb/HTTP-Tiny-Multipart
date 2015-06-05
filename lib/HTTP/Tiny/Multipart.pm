@@ -189,7 +189,7 @@ creates
   test
   --go7DX--
 
-=head2 CONTRIBUTORS
+=head1 CONTRIBUTORS
 
 =over 4
 
