@@ -107,7 +107,7 @@ no warnings 'redefine';
     my $boundary      = _get_boundary($headers, $content_parts);
 
     my $last_boundary = $boundary;
-    substr $last_boundary, -3, 0, "--";
+    substr $last_boundary, -2, 0, "--";
  
     return $self->request('POST', $url, {
             %$args,
