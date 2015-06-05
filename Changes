@@ -4,10 +4,14 @@ Change history for HTTP::Tiny::Multipart
 0.04  2015-06-05
 
       [BUGFIX]
-      * Fix out-by-one error on last_boundary
+      * Fix out-by-one error on last_boundary (sdt, github#1)
 
       [DOCUMENTATION]
-      * Small fixups for second pod example
+      * Small fixups for second pod example (sdt, github#2)
+
+      [TESTS]
+      * Added basic tests for _build_content
+      * Added basic tests for multipart post
 
 0.03  2014-08-26
 
