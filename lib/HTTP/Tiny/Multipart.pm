@@ -165,7 +165,8 @@ And
             filename => 'test.txt',
             content  => $content,
             content_type  => 'text/plain',
-        }
+        },
+        testfield => 'test'
     } );
 
 creates
@@ -182,7 +183,7 @@ creates
   Content-Type: text/plain
   
   This is a test
-  --go7DX--
+  --go7DX
   Content-Disposition: form-data; name="testfield"
   
   test
