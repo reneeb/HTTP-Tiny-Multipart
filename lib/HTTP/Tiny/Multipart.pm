@@ -189,3 +189,10 @@ creates
   test
   --go7DX--
 
+=head2 CONTRIBUTORS
+
+=over 4
+
+=item * Stephen Thirlwall
+
+=back
