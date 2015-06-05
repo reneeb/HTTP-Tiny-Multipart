@@ -1,6 +1,14 @@
 Change history for HTTP::Tiny::Multipart
 ========================================
 
+0.04  2015-06-05
+
+      [BUGFIX]
+      * Fix out-by-one error on last_boundary
+
+      [DOCUMENTATION]
+      * Small fixups for second pod example
+
 0.03  2014-08-26
 
       add more documentation
