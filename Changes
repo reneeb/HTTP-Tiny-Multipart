@@ -1,6 +1,11 @@
 Change history for HTTP::Tiny::Multipart
 ========================================
 
+0.05  2015-09-22
+
+      [BUGFIX]
+      * If $1 is defined from a previous regex match, the Content-Type of the request is incorrect.  The fix is to only use $1 and $2 if the regex matched. (Infinoid, github #3)
+
 0.04  2015-06-05
 
       [BUGFIX]
