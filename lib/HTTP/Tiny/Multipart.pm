@@ -26,10 +26,14 @@ sub _get_boundary {
     }
  
     # Add boundary to Content-Type header
-    ($headers->{'content-type'} || '') =~ m!^(.*multipart/[^;]+)(.*)$!;
-
-    my $before = $1 || 'multipart/form-data';
-    my $after  = $2 || '';
+    my $before = 'multipart/form-data';
+    my $after  = '';
+    if(exists($$headers{'content-type'})) {
+        if($$headers{'content-type'} =~ m!^(.*multipart/[^;]+)(.*)$!) {
+            $before = $1;
+            $after  = $2;
+        }
+    }
 
     $headers->{'content-type'} = "$before; boundary=$boundary$after";
  
