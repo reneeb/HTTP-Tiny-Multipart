@@ -28,8 +28,8 @@ sub _get_boundary {
     # Add boundary to Content-Type header
     my $before = 'multipart/form-data';
     my $after  = '';
-    if(exists($$headers{'content-type'})) {
-        if($$headers{'content-type'} =~ m!^(.*multipart/[^;]+)(.*)$!) {
+    if( defined $headers->{'content-type'} ) {
+        if( $headers->{'content-type'} =~ m!^(.*multipart/[^;]+)(.*)$! ) {
             $before = $1;
             $after  = $2;
         }
