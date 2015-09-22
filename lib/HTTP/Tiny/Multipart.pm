@@ -43,7 +43,6 @@ sub _get_boundary {
 sub _build_content {
     my ($data) = @_;
 
-    my $boundary = _get_boundary();
     my @params = ref $data eq 'HASH' ? %$data : @$data;
     @params % 2 == 0
         or Carp::croak("form data reference must have an even number of terms\n");
