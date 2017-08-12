@@ -199,4 +199,8 @@ creates
 
 =item * Stephen Thirlwall
 
+=item * Markvy
+
+=item * Infinoid
+
 =back
