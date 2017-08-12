@@ -10,7 +10,7 @@ use File::Basename;
 use Carp;
 use MIME::Base64;
 
-our $VERSION = 0.05;
+our $VERSION = 0.06;
 
 sub _get_boundary {
     my ($headers, $content) = @_;
