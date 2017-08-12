@@ -10,7 +10,7 @@ use File::Basename;
 use Carp;
 use MIME::Base64;
 
-our $VERSION = 0.06;
+our $VERSION = 0.07;
 
 sub _get_boundary {
     my ($headers, $content) = @_;
@@ -202,5 +202,7 @@ creates
 =item * Markvy
 
 =item * Infinoid
+
+=item * Mohammad S Anwar
 
 =back

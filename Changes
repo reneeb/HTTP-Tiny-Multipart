@@ -1,6 +1,11 @@
 Change history for HTTP::Tiny::Multipart
 ========================================
 
+0.07  2017-08-12
+
+      [MISC]
+      * Added META.json
+
 0.06  2017-08-12
 
       [DOCUMENTATION]
