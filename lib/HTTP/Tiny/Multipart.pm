@@ -9,7 +9,6 @@ use HTTP::Tiny;
 use File::Basename;
 use Carp;
 use MIME::Base64;
-use Data::Dumper;
 
 our $VERSION = 0.08;
 
