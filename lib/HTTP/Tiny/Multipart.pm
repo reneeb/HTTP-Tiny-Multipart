@@ -9,22 +9,24 @@ use HTTP::Tiny;
 use File::Basename;
 use Carp;
 use MIME::Base64;
+use Data::Dumper;
 
 our $VERSION = 0.08;
 
 sub _get_boundary {
     my ($headers, $content) = @_;
- 
+
+    croak "Must provide Headers as param!" unless defined $headers;
+    croak "Must provide Content as param!" unless defined $content;
+
     # Generate and check boundary
     my $boundary;
     my $size = 1;
 
-    while (1) {
-        $boundary = encode_base64 join('', map chr(rand 256), 1 .. $size++ * 3);
-        $boundary =~ s/\W/X/g;
-        last unless grep{ $_ =~ m{$boundary} }@{$content};
-    }
- 
+    $boundary = encode_base64 join('', map chr(rand 256), 1 .. $size++ * 3);
+    $boundary =~ s/\W/X/g;
+    last unless grep{ $_ =~ m{$boundary} }@{$content};
+
     # Add boundary to Content-Type header
     my $before = 'multipart/form-data';
     my $after  = '';
@@ -36,7 +38,7 @@ sub _get_boundary {
     }
 
     $headers->{'content-type'} = "$before; boundary=$boundary$after";
- 
+
     return "--$boundary\x0d\x0a";
 }
 
@@ -46,7 +48,7 @@ sub _build_content {
     my @params = ref $data eq 'HASH' ? %$data : @$data;
     @params % 2 == 0
         or Carp::croak("form data reference must have an even number of terms\n");
- 
+
     my @terms;
     while( @params ) {
         my ($key, $value) = splice(@params, 0, 2);
@@ -78,7 +80,7 @@ sub _build_content {
             }
 
             push @terms, sprintf "Content-Disposition: form-data; name=\"%s\"%s%s\x0d\x0a\x0d\x0a%s\x0d\x0a",
-                $key, 
+                $key,
                 $filename,
                 $content_type,
                 $content;
@@ -100,7 +102,7 @@ no warnings 'redefine';
 
     (ref $data eq 'HASH' || ref $data eq 'ARRAY')
         or Carp::croak("form data must be a hash or array reference\n");
- 
+
     my $headers = {};
     while ( my ($key, $value) = each %{$args->{headers} || {}} ) {
         $headers->{lc $key} = $value;
@@ -111,7 +113,7 @@ no warnings 'redefine';
 
     my $last_boundary = $boundary;
     substr $last_boundary, -2, 0, "--";
- 
+
     return $self->request('POST', $url, {
             %$args,
             content => $boundary . join( $boundary, @{$content_parts}) . $last_boundary,
@@ -126,12 +128,12 @@ no warnings 'redefine';
 
     use HTTP::Tiny;
     use HTTP::Tiny::Multipart;
-  
+
     my $http = HTTP::Tiny->new;
-  
+
     my $content = "This is a test";
-  
-    my $response = $http->post_multipart( 'http://localhost:3000/', { 
+
+    my $response = $http->post_multipart( 'http://localhost:3000/', {
         file => {
             filename => 'test.txt',
             content  => $content,
@@ -146,10 +148,10 @@ creates this request
   Content-Type: multipart/form-data; boundary=go7DX
   Connection: close
   Host: localhost:3000
-  
+
   --go7DX
   Content-Disposition: form-data; name="file"; filename="test.txt"
-  
+
   This is a test
   --go7DX--
 
@@ -157,12 +159,12 @@ And
 
     use HTTP::Tiny;
     use HTTP::Tiny::Multipart;
-  
+
     my $http = HTTP::Tiny->new;
-  
+
     my $content = "This is a test";
-  
-    my $response = $http->post_multipart( 'http://localhost:3000/', { 
+
+    my $response = $http->post_multipart( 'http://localhost:3000/', {
         file => {
             filename => 'test.txt',
             content  => $content,
@@ -179,15 +181,15 @@ creates
   Content-Type: multipart/form-data; boundary=go7DX
   Connection: close
   Host: localhost:3000
-  
+
   --go7DX
   Content-Disposition: form-data; name="file"; filename="test.txt"
   Content-Type: text/plain
-  
+
   This is a test
   --go7DX
   Content-Disposition: form-data; name="testfield"
-  
+
   test
   --go7DX--
 
